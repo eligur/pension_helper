@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<template id="__bundler_thumbnail" data-bg-color="#F6F3EE">
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+<rect width="1200" height="800" fill="#F6F3EE"/>
+<rect x="360" y="220" width="480" height="360" rx="48" fill="#FFFFFF" stroke="#E7E1D7" stroke-width="6"/>
+<rect x="430" y="300" width="180" height="26" rx="13" fill="#0E6B5E"/>
+<rect x="430" y="360" width="340" height="20" rx="10" fill="#E4DED4"/>
+<rect x="430" y="404" width="260" height="20" rx="10" fill="#E4DED4"/>
+<rect x="430" y="470" width="150" height="52" rx="26" fill="#0E6B5E"/>
+<rect x="600" y="470" width="110" height="52" rx="26" fill="#E4EFEC"/>
+</svg>
+</template>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&family=Frank+Ruhl+Libre:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; padding: 0; background: #F6F3EE; }
+  body { font-family: 'Assistant', system-ui, sans-serif; color: #17211F; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: #0E6B5E; text-decoration: none; }
+  a:hover { color: #0A544A; text-decoration: underline; }
+  input, button, textarea { font-family: inherit; }
+  input[type=range] { accent-color: #0E6B5E; }
+  input:focus-visible, button:focus-visible { outline: 2px solid #0E6B5E; outline-offset: 2px; }
+  @keyframes stepIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+</style>
+</helmet>
+
+<div dir="rtl" style="min-height:100vh; background:#F6F3EE; display:flex; flex-direction:column; align-items:center; padding:0 20px 120px">
+
+  <div style="width:100%; max-width:780px; display:flex; align-items:center; justify-content:space-between; padding:26px 4px 18px; gap:16px">
+    <div style="display:flex; align-items:center; gap:10px">
+      <div style="width:32px; height:32px; border-radius:9px; background:#0E6B5E; display:flex; align-items:center; justify-content:center; color:#F6F3EE; font-weight:700; font-size:15px">פ</div>
+      <div style="font-size:17px; font-weight:600; letter-spacing:-0.01em">עוזר הפנסיה</div>
+    </div>
+    <div style="display:flex; align-items:center; gap:14px">
+      <button onClick="{{ onRestart }}" style="cursor:pointer; border:1.5px solid #E2DCD2; background:#FFFFFF; color:#17211F; font-size:14.5px; font-weight:600; padding:9px 16px; border-radius:99px; transition:all .18s ease; {{ restartDyn }}" style-hover="border-color:#0E6B5E; color:#0E6B5E">חזור להתחלה</button>
+      <div style="font-size:14px; color:#6B7A76; font-weight:500">שלב {{ stepNum }} מתוך {{ stepTotal }}</div>
+    </div>
+  </div>
+
+  <div style="width:100%; max-width:780px; height:6px; border-radius:99px; background:#E4DED4; overflow:hidden">
+    <div style="height:100%; border-radius:99px; background:#0E6B5E; transition:width .45s cubic-bezier(.4,0,.2,1); width:{{ progress }}"></div>
+  </div>
+
+  <div style="width:100%; max-width:780px; margin-top:28px; background:#FFFFFF; border:1px solid #E7E1D7; border-radius:22px; padding:38px 38px 34px; box-shadow:0 1px 2px rgba(23,33,31,.04), 0 18px 44px -28px rgba(23,33,31,.22)">
+
+    <div style="animation:stepIn .35s ease both">
+      <div style="font-size:13px; font-weight:600; color:#0E6B5E; letter-spacing:.06em; margin-bottom:10px">{{ stepKicker }}</div>
+      <h1 style="font-family:'Frank Ruhl Libre',serif; font-size:32px; line-height:1.2; font-weight:700; margin:0 0 10px; letter-spacing:-0.015em">{{ stepTitle }}</h1>
+      <p style="margin:0 0 30px; font-size:17px; line-height:1.55; color:#6B7A76; max-width:56ch; text-wrap:pretty">{{ stepSubtitle }}</p>
+    </div>
+
+    <!-- 0 · welcome -->
+    <sc-if value="{{ is0 }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid; gap:14px">
+        <div style="display:flex; gap:14px; align-items:flex-start; background:#F2F7F5; border:1px solid #DCEAE6; border-radius:16px; padding:18px 20px">
+          <div style="width:26px; height:26px; flex:none; border-radius:8px; background:#0E6B5E; color:#fff; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center">1</div>
+          <div>
+            <div style="font-size:16px; font-weight:600; margin-bottom:3px">שש שאלות קצרות</div>
+            <div style="font-size:15px; color:#6B7A76; line-height:1.5">מצב משפחתי, תעסוקה, הכנסה, נכסים ומוצרים פנסיוניים. אין תשובות נכונות או שגויות.</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:14px; align-items:flex-start; background:#F2F7F5; border:1px solid #DCEAE6; border-radius:16px; padding:18px 20px">
+          <div style="width:26px; height:26px; flex:none; border-radius:8px; background:#0E6B5E; color:#fff; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center">2</div>
+          <div>
+            <div style="font-size:16px; font-weight:600; margin-bottom:3px">אפשר לצרף דוחות — או לדלג</div>
+            <div style="font-size:15px; color:#6B7A76; line-height:1.5">דוח פנסיוני שנתי או מסלקה פנסיונית יחדדו את התמונה, אבל הם לא חובה.</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:14px; align-items:flex-start; background:#F2F7F5; border:1px solid #DCEAE6; border-radius:16px; padding:18px 20px">
+          <div style="width:26px; height:26px; flex:none; border-radius:8px; background:#0E6B5E; color:#fff; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center">3</div>
+          <div>
+            <div style="font-size:16px; font-weight:600; margin-bottom:3px">כ־4 דקות, אפשר לעצור באמצע</div>
+            <div style="font-size:15px; color:#6B7A76; line-height:1.5">התשובות נשמרות אצלך במהלך המילוי ותוכל לחזור לכל שלב.</div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- 1 · family -->
+    <sc-if value="{{ is1 }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid; gap:30px">
+        <div>
+          <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:14px">
+            <label style="font-size:16px; font-weight:600">מה הגיל שלך?</label>
+            <div style="font-size:26px; font-weight:700; color:#0E6B5E; font-variant-numeric:tabular-nums">{{ age }}</div>
+          </div>
+          <input type="range" min="18" max="80" step="1" value="{{ age }}" onChange="{{ onAge }}" style="width:100%; height:26px" />
+          <div style="display:flex; justify-content:space-between; font-size:13px; color:#9AA5A1; margin-top:2px"><span>18</span><span>80</span></div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:16px; font-weight:600; margin-bottom:12px">מצב משפחתי</label>
+          <div style="display:flex; flex-wrap:wrap; gap:10px">
+            <sc-for list="{{ maritalOptions }}" as="o" hint-placeholder-count="5">
+              <button onClick="{{ o.onSelect }}" style="cursor:pointer; font-size:16px; font-weight:500; padding:13px 20px; border-radius:99px; border:1.5px solid #E2DCD2; background:#FFFFFF; color:#17211F; transition:all .18s ease; {{ o.dyn }}">{{ o.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:16px; font-weight:600; margin-bottom:12px">כמה ילדים יש לך?</label>
+          <div style="display:flex; align-items:center; gap:16px">
+            <button onClick="{{ onKidsMinus }}" style="cursor:pointer; width:52px; height:52px; border-radius:14px; border:1.5px solid #E2DCD2; background:#fff; font-size:24px; font-weight:600; color:#17211F; display:flex; align-items:center; justify-content:center" style-hover="border-color:#0E6B5E; color:#0E6B5E">−</button>
+            <div style="min-width:44px; text-align:center; font-size:28px; font-weight:700; font-variant-numeric:tabular-nums">{{ kids }}</div>
+            <button onClick="{{ onKidsPlus }}" style="cursor:pointer; width:52px; height:52px; border-radius:14px; border:1.5px solid #E2DCD2; background:#fff; font-size:24px; font-weight:600; color:#17211F; display:flex; align-items:center; justify-content:center" style-hover="border-color:#0E6B5E; color:#0E6B5E">+</button>
+          </div>
+        </div>
+
+        <sc-if value="{{ hasKids }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <label style="display:block; font-size:16px; font-weight:600; margin-bottom:4px">גילאי הילדים</label>
+            <div style="font-size:14px; color:#6B7A76; margin-bottom:12px">גיל משוער מספיק לגמרי</div>
+            <div style="display:flex; flex-wrap:wrap; gap:12px">
+              <sc-for list="{{ kidAges }}" as="k" hint-placeholder-count="2">
+                <div style="display:flex; flex-direction:column; gap:6px; width:104px">
+                  <span style="font-size:13px; color:#6B7A76; font-weight:500">{{ k.label }}</span>
+                  <input type="number" min="0" max="40" value="{{ k.value }}" onChange="{{ k.onChange }}" placeholder="גיל" style="width:100%; padding:12px 14px; font-size:17px; border-radius:12px; border:1.5px solid #E2DCD2; background:#FCFBF9; text-align:center" />
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- 2 · employment -->
+    <sc-if value="{{ is2 }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid; gap:12px">
+        <sc-for list="{{ employmentOptions }}" as="o" hint-placeholder-count="4">
+          <button onClick="{{ o.onSelect }}" style="cursor:pointer; text-align:right; display:flex; align-items:center; gap:16px; padding:20px 22px; border-radius:16px; border:1.5px solid #E2DCD2; background:#FFFFFF; transition:all .18s ease; {{ o.dyn }}">
+            <div style="width:22px; height:22px; flex:none; border-radius:99px; border:2px solid #C9C2B6; display:flex; align-items:center; justify-content:center; {{ o.dotDyn }}">
+              <div style="width:10px; height:10px; border-radius:99px; background:#0E6B5E; {{ o.innerDyn }}"></div>
+            </div>
+            <div>
+              <div style="font-size:17px; font-weight:600; margin-bottom:2px; color:#17211F">{{ o.label }}</div>
+              <div style="font-size:14.5px; color:#6B7A76; line-height:1.45">{{ o.hint }}</div>
+            </div>
+          </button>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- 3 · income -->
+    <sc-if value="{{ is3 }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid; gap:32px">
+        <div>
+          <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:14px">
+            <label style="font-size:16px; font-weight:600">הכנסה חודשית ברוטו</label>
+            <div style="font-size:26px; font-weight:700; color:#0E6B5E; font-variant-numeric:tabular-nums">{{ incomeLabel }}</div>
+          </div>
+          <input type="range" min="0" max="60000" step="500" value="{{ income }}" onChange="{{ onIncome }}" style="width:100%; height:26px" />
+          <div style="display:flex; justify-content:space-between; font-size:13px; color:#9AA5A1; margin-top:2px"><span>0</span><span>60,000+</span></div>
+        </div>
+
+        <div>
+          <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px">
+            <label style="font-size:16px; font-weight:600">שיעור ההפרשה לפנסיה</label>
+            <div style="font-size:26px; font-weight:700; color:#0E6B5E; font-variant-numeric:tabular-nums">{{ pctLabel }}</div>
+          </div>
+          <div style="font-size:14px; color:#6B7A76; margin-bottom:14px">סך ההפרשה — שלך והמעסיק. לא בטוח? השארת הערך המקובל מספיקה.</div>
+          <input type="range" min="0" max="25" step="0.5" value="{{ pensionPct }}" onChange="{{ onPct }}" style="width:100%; height:26px" />
+          <div style="margin-top:14px; background:#F2F7F5; border:1px solid #DCEAE6; border-radius:14px; padding:15px 18px; font-size:15.5px; color:#17211F">
+            כ־<b>{{ monthlyDeposit }}</b> נכנסים לחיסכון הפנסיוני שלך בכל חודש
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:16px; font-weight:600; margin-bottom:12px">יציבות ההכנסה</label>
+          <div style="display:flex; flex-wrap:wrap; gap:10px">
+            <sc-for list="{{ stabilityOptions }}" as="o" hint-placeholder-count="3">
+              <button onClick="{{ o.onSelect }}" style="cursor:pointer; font-size:16px; font-weight:500; padding:13px 20px; border-radius:99px; border:1.5px solid #E2DCD2; background:#FFFFFF; color:#17211F; transition:all .18s ease; {{ o.dyn }}">{{ o.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- 4 · assets -->
+    <sc-if value="{{ is4 }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid; gap:12px">
+        <sc-for list="{{ assetOptions }}" as="o" hint-placeholder-count="5">
+          <div style="border-radius:16px; border:1.5px solid #E2DCD2; background:#FFFFFF; overflow:hidden; transition:all .18s ease; {{ o.dyn }}">
+            <button onClick="{{ o.onToggle }}" style="cursor:pointer; width:100%; text-align:right; display:flex; align-items:center; gap:16px; padding:19px 22px; border:0; background:transparent">
+              <div style="width:22px; height:22px; flex:none; border-radius:7px; border:2px solid #C9C2B6; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; font-weight:700; {{ o.boxDyn }}">{{ o.mark }}</div>
+              <div style="flex:1">
+                <div style="font-size:17px; font-weight:600; color:#17211F">{{ o.label }}</div>
+                <div style="font-size:14.5px; color:#6B7A76; margin-top:2px">{{ o.hint }}</div>
+              </div>
+            </button>
+            <sc-if value="{{ o.on }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:0 22px 20px 22px; display:flex; align-items:center; gap:12px; flex-wrap:wrap">
+                <span style="font-size:14.5px; color:#6B7A76; font-weight:500">{{ o.amountLabel }}</span>
+                <div style="position:relative; display:flex; align-items:center">
+                  <span style="position:absolute; right:14px; color:#9AA5A1; font-size:16px">₪</span>
+                  <input type="number" min="0" step="1000" value="{{ o.amount }}" onChange="{{ o.onAmount }}" placeholder="0" style="width:190px; padding:12px 34px 12px 14px; font-size:16px; border-radius:12px; border:1.5px solid #E2DCD2; background:#FCFBF9; font-variant-numeric:tabular-nums" />
+                </div>
+                <span style="font-size:13.5px; color:#9AA5A1">אומדן גס בסדר גמור</span>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- 5 · products -->
+    <sc-if value="{{ is5 }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid; gap:12px">
+        <sc-for list="{{ productOptions }}" as="o" hint-placeholder-count="5">
+          <div style="border-radius:16px; border:1.5px solid #E2DCD2; background:#FFFFFF; overflow:hidden; transition:all .18s ease; {{ o.dyn }}">
+            <button onClick="{{ o.onToggle }}" style="cursor:pointer; width:100%; text-align:right; display:flex; align-items:center; gap:16px; padding:19px 22px; border:0; background:transparent">
+              <div style="width:22px; height:22px; flex:none; border-radius:7px; border:2px solid #C9C2B6; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; font-weight:700; {{ o.boxDyn }}">{{ o.mark }}</div>
+              <div style="flex:1">
+                <div style="font-size:17px; font-weight:600; color:#17211F">{{ o.label }}</div>
+                <div style="font-size:14.5px; color:#6B7A76; margin-top:2px">{{ o.hint }}</div>
+              </div>
+            </button>
+            <sc-if value="{{ o.on }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:0 22px 20px 22px; display:flex; align-items:center; gap:12px; flex-wrap:wrap">
+                <input type="text" value="{{ o.provider }}" onChange="{{ o.onProvider }}" placeholder="שם הגוף המנהל (אופציונלי)" style="width:230px; padding:12px 14px; font-size:16px; border-radius:12px; border:1.5px solid #E2DCD2; background:#FCFBF9" />
+                <div style="position:relative; display:flex; align-items:center">
+                  <span style="position:absolute; right:14px; color:#9AA5A1; font-size:16px">₪</span>
+                  <input type="number" min="0" step="1000" value="{{ o.amount }}" onChange="{{ o.onAmount }}" placeholder="צבירה" style="width:170px; padding:12px 34px 12px 14px; font-size:16px; border-radius:12px; border:1.5px solid #E2DCD2; background:#FCFBF9; font-variant-numeric:tabular-nums" />
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+        <button onClick="{{ onNoIdea }}" style="cursor:pointer; margin-top:6px; text-align:right; padding:17px 22px; border-radius:16px; border:1.5px dashed #D6CFC3; background:transparent; font-size:16px; font-weight:500; color:#6B7A76; transition:all .18s ease; {{ noIdeaDyn }}">אני לא בטוח אילו מוצרים יש לי — נשמח שתעזרו לי לברר</button>
+      </div>
+    </sc-if>
+
+    <!-- 6 · liquidity -->
+    <sc-if value="{{ is6 }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid; gap:12px">
+        <sc-for list="{{ needOptions }}" as="o" hint-placeholder-count="3">
+          <button onClick="{{ o.onSelect }}" style="cursor:pointer; text-align:right; display:flex; align-items:center; gap:16px; padding:20px 22px; border-radius:16px; border:1.5px solid #E2DCD2; background:#FFFFFF; transition:all .18s ease; {{ o.dyn }}">
+            <div style="width:22px; height:22px; flex:none; border-radius:99px; border:2px solid #C9C2B6; display:flex; align-items:center; justify-content:center; {{ o.dotDyn }}">
+              <div style="width:10px; height:10px; border-radius:99px; background:#0E6B5E; {{ o.innerDyn }}"></div>
+            </div>
+            <div>
+              <div style="font-size:17px; font-weight:600; margin-bottom:2px; color:#17211F">{{ o.label }}</div>
+              <div style="font-size:14.5px; color:#6B7A76; line-height:1.45">{{ o.hint }}</div>
+            </div>
+          </button>
+        </sc-for>
+
+        <sc-if value="{{ needsMoney }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:14px; display:grid; gap:20px; background:#FBF9F5; border:1px solid #E7E1D7; border-radius:16px; padding:22px">
+            <div>
+              <label style="display:block; font-size:16px; font-weight:600; margin-bottom:10px">איזה סכום נדרש?</label>
+              <div style="position:relative; display:flex; align-items:center">
+                <span style="position:absolute; right:14px; color:#9AA5A1; font-size:16px">₪</span>
+                <input type="number" min="0" step="1000" value="{{ needAmount }}" onChange="{{ onNeedAmount }}" style="width:220px; padding:13px 34px 13px 14px; font-size:17px; border-radius:12px; border:1.5px solid #E2DCD2; background:#fff; font-variant-numeric:tabular-nums" />
+              </div>
+            </div>
+            <div>
+              <label style="display:block; font-size:16px; font-weight:600; margin-bottom:10px">למה הכסף מיועד?</label>
+              <div style="display:flex; flex-wrap:wrap; gap:10px">
+                <sc-for list="{{ purposeOptions }}" as="o" hint-placeholder-count="5">
+                  <button onClick="{{ o.onSelect }}" style="cursor:pointer; font-size:15.5px; font-weight:500; padding:12px 18px; border-radius:99px; border:1.5px solid #E2DCD2; background:#FFFFFF; color:#17211F; transition:all .18s ease; {{ o.dyn }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- 7 · upload -->
+    <sc-if value="{{ is7 }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid; gap:18px">
+        <label onDragOver="{{ onDragOver }}" onDragLeave="{{ onDragLeave }}" onDrop="{{ onDrop }}" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; padding:44px 28px; border-radius:18px; border:2px dashed #CFD8D4; background:#FBF9F5; transition:all .2s ease; {{ dropDyn }}">
+          <div style="width:52px; height:52px; border-radius:15px; background:#E4EFEC; display:flex; align-items:center; justify-content:center; color:#0E6B5E; font-size:24px; font-weight:600; margin-bottom:4px">↑</div>
+          <div style="font-size:18px; font-weight:600">גרור לכאן קבצים או לחץ לבחירה</div>
+          <div style="font-size:15px; color:#6B7A76; max-width:44ch; line-height:1.5">דוח פנסיוני שנתי, דוח מסלקה פנסיונית, תלושי שכר או אישורי הפקדה — PDF, JPG או PNG עד 20MB לקובץ.</div>
+          <input type="file" multiple="{{ true }}" accept=".pdf,.jpg,.jpeg,.png" onChange="{{ onFiles }}" style="display:none" />
+        </label>
+
+        <sc-if value="{{ hasFiles }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid; gap:10px">
+            <sc-for list="{{ files }}" as="f" hint-placeholder-count="2">
+              <div style="display:flex; align-items:center; gap:14px; padding:15px 18px; border-radius:14px; border:1px solid #DCEAE6; background:#F2F7F5">
+                <div style="width:34px; height:34px; flex:none; border-radius:10px; background:#0E6B5E; color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center">{{ f.ext }}</div>
+                <div style="flex:1; min-width:0">
+                  <div style="font-size:15.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ f.name }}</div>
+                  <div style="font-size:13.5px; color:#6B7A76">{{ f.size }} · נטען בהצלחה</div>
+                </div>
+                <button onClick="{{ f.onRemove }}" style="cursor:pointer; border:0; background:transparent; color:#6B7A76; font-size:15px; font-weight:600; padding:8px 10px; border-radius:9px" style-hover="color:#B4453A; background:#F6E9E7">הסרה</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div style="font-size:14.5px; color:#6B7A76; line-height:1.55; background:#FBF9F5; border:1px solid #E7E1D7; border-radius:14px; padding:16px 18px">
+          אין לך את הדוחות בהישג יד? אפשר לדלג — נשלים את הפרטים בשיחה. הקבצים נשמרים מוצפנים ומשמשים אך ורק לניתוח התיק שלך.
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- 8 · summary -->
+    <sc-if value="{{ is8 }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid; gap:14px">
+        <sc-for list="{{ summary }}" as="s" hint-placeholder-count="6">
+          <div style="border:1px solid #E7E1D7; border-radius:16px; padding:18px 20px; background:#FCFBF9">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px">
+              <div style="font-size:14px; font-weight:600; color:#0E6B5E; letter-spacing:.04em">{{ s.title }}</div>
+              <button onClick="{{ s.onEdit }}" style="cursor:pointer; border:0; background:transparent; color:#6B7A76; font-size:14.5px; font-weight:600; padding:6px 8px; border-radius:8px" style-hover="color:#0E6B5E; background:#E4EFEC">עריכה</button>
+            </div>
+            <div style="font-size:16.5px; line-height:1.6; color:#17211F; text-wrap:pretty">{{ s.value }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- 9 · saved -->
+    <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid; gap:18px">
+        <div style="display:flex; align-items:center; gap:16px; background:#F2F7F5; border:1px solid #DCEAE6; border-radius:16px; padding:20px 22px">
+          <div style="width:40px; height:40px; flex:none; border-radius:12px; background:#0E6B5E; color:#fff; font-size:20px; font-weight:700; display:flex; align-items:center; justify-content:center">✓</div>
+          <div>
+            <div style="font-size:17px; font-weight:600">קובץ התשובות נוצר</div>
+            <div style="font-size:15px; color:#6B7A76; margin-top:2px">pension-questionnaire.json · כולל את כל השדות שמילאת</div>
+          </div>
+        </div>
+
+        <details style="border:1px solid #E7E1D7; border-radius:16px; background:#FCFBF9; padding:16px 20px">
+          <summary style="cursor:pointer; font-size:16px; font-weight:600; color:#0E6B5E; list-style:none">הצגת תוכן הקובץ</summary>
+          <pre dir="ltr" style="margin:14px 0 0; padding:16px; background:#17211F; color:#D8E6E1; border-radius:12px; font-size:12.5px; line-height:1.6; overflow:auto; max-height:340px; text-align:left; font-family:ui-monospace,SFMono-Regular,Menlo,monospace">{{ jsonPreview }}</pre>
+        </details>
+
+        <div style="display:flex; gap:12px; flex-wrap:wrap">
+          <button onClick="{{ onDownloadJson }}" style="cursor:pointer; padding:15px 30px; border-radius:14px; border:0; background:#0E6B5E; color:#fff; font-size:16.5px; font-weight:600" style-hover="background:#0A544A">הורדת הקובץ שוב</button>
+          <button onClick="{{ onEditAgain }}" style="cursor:pointer; padding:15px 26px; border-radius:14px; border:1.5px solid #E2DCD2; background:transparent; font-size:16.5px; font-weight:600; color:#17211F" style-hover="border-color:#17211F">חזרה לעריכת התשובות</button>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+
+  <div style="width:100%; max-width:780px; display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:22px; flex-wrap:wrap; {{ footerDyn }}">
+    <button onClick="{{ onBack }}" style="cursor:pointer; padding:15px 26px; border-radius:14px; border:1.5px solid #E2DCD2; background:transparent; font-size:16.5px; font-weight:600; color:#17211F; transition:all .18s ease; {{ backDyn }}" style-hover="border-color:#17211F">חזרה</button>
+    <div style="display:flex; align-items:center; gap:18px">
+      <button onClick="{{ onSkip }}" style="cursor:pointer; border:0; background:transparent; font-size:16px; font-weight:600; color:#6B7A76; padding:12px 6px; border-radius:9px; {{ skipDyn }}" style-hover="color:#17211F">דלג על השלב</button>
+      <button onClick="{{ onNext }}" style="cursor:pointer; padding:16px 38px; border-radius:14px; border:0; background:#0E6B5E; color:#FFFFFF; font-size:17px; font-weight:600; box-shadow:0 10px 24px -14px rgba(14,107,94,.9); transition:all .18s ease; {{ nextDyn }}" style-hover="background:#0A544A">{{ nextLabel }}</button>
+    </div>
+  </div>
+
+  <sc-if value="{{ showHelp }}" hint-placeholder-val="{{ true }}">
+    <div style="width:100%; max-width:780px; margin-top:20px; text-align:center; font-size:14.5px; color:#9AA5A1">שאלה באמצע הדרך? כתבו לנו והמשיכו מאיפה שהפסקתם.</div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1000,&quot;height&quot;:900},&quot;allowUpload&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;התנהגות&quot;},&quot;allowSkip&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;התנהגות&quot;}}">
+const MARITAL = [
+  { key: "single", label: "יחיד/ה" },
+  { key: "married", label: "נשוי/אה" },
+  { key: "partner", label: "זוגיות ללא נישואין" },
+  { key: "divorced", label: "גרוש/ה" },
+  { key: "widow", label: "אלמן/ה" }
+];
+
+const EMPLOYMENT = [
+  { key: "employee", label: "שכיר/ה", hint: "מקבל תלוש שכר ממעסיק" },
+  { key: "self", label: "עצמאי/ת", hint: "עוסק פטור, עוסק מורשה או חברה" },
+  { key: "both", label: "גם שכיר וגם עצמאי", hint: "משלב בין עבודה מסודרת לעיסוק עצמאי" },
+  { key: "none", label: "לא עובד/ת כרגע", hint: "בין עבודות, בחל\"ת, בפנסיה או לא בכוח העבודה" }
+];
+
+const STABILITY = [
+  { key: "stable", label: "קבועה ויציבה" },
+  { key: "varies", label: "משתנה מחודש לחודש" },
+  { key: "seasonal", label: "עונתית או פרויקטלית" }
+];
+
+const ASSETS = [
+  { key: "home", label: "דירת מגורים", hint: "הנכס שבו אתה גר", amountLabel: "שווי משוער" },
+  { key: "invest", label: "נדל\"ן להשקעה", hint: "דירה או נכס שמושכר או מיועד להשכרה", amountLabel: "שווי משוער" },
+  { key: "car", label: "רכב", hint: "רכב או שני רכבים במשק הבית", amountLabel: "שווי משוער" },
+  { key: "savings", label: "חסכונות והשקעות", hint: "פיקדונות, תיק ניירות ערך, קרנות, מטבעות דיגיטליים", amountLabel: "סך צבירה" },
+  { key: "other", label: "נכסים אחרים", hint: "עסק, מגרש, אופציות, ירושה צפויה", amountLabel: "שווי משוער" }
+];
+
+const PRODUCTS = [
+  { key: "life", label: "ביטוח חיים", hint: "ריסק, ביטוח למשכנתא או ביטוח מנהלים משולב" },
+  { key: "pension", label: "קרן פנסיה", hint: "קרן פנסיה מקיפה או כללית" },
+  { key: "managers", label: "ביטוח מנהלים", hint: "פוליסת ביטוח מנהלים ותיקה או חדשה" },
+  { key: "study", label: "קרן השתלמות", hint: "חיסכון נזיל לרוב אחרי שש שנים" },
+  { key: "gemel", label: "קופת גמל להשקעה", hint: "כולל חיסכון לכל ילד" }
+];
+
+const NEEDS = [
+  { key: "no", label: "לא, אין צורך בכסף כרגע", hint: "החיסכון יכול להמשיך לעבוד ללא הפרעה" },
+  { key: "soon", label: "כן, בטווח של עד שנה", hint: "יש הוצאה צפויה שכדאי להיערך אליה" },
+  { key: "now", label: "כן, באופן מיידי", hint: "נדרשת נזילות בשבועות הקרובים" }
+];
+
+const PURPOSES = ["משכנתא או דיור", "חתונה או שמחה", "לימודים", "רפואה וטיפולים", "כיסוי חובות", "הקמת עסק", "אחר"];
+
+const STEPS = [
+  { kicker: "לפני שמתחילים", title: "בוא נבנה תמונה מדויקת של הפנסיה שלך", subtitle: "כמה שאלות פשוטות על החיים שלך ועל מה שכבר יש לך. בסוף תקבל סיכום מסודר וניתן להמשיך ממנו." },
+  { kicker: "שאלה 1 מתוך 6", title: "קודם כל, קצת עליך", subtitle: "הגיל והמצב המשפחתי קובעים כמה זמן יש לחיסכון לעבוד ומי תלוי בו." },
+  { kicker: "שאלה 2 מתוך 6", title: "איך אתה מרוויח את הכסף שלך?", subtitle: "לשכירים ולעצמאים חלים כללי הפקדה והטבות מס שונים לגמרי." },
+  { kicker: "שאלה 3 מתוך 6", title: "הכנסה והפרשות", subtitle: "מספרים משוערים בהחלט מספיקים בשלב הזה." },
+  { kicker: "שאלה 4 מתוך 6", title: "מוצרים פנסיוניים שיש לך", subtitle: "סמן כל מה שאתה מזהה. אם אתה לא בטוח בשם הגוף המנהל או בסכום — דלג עליהם." },
+  { kicker: "שאלה 5 מתוך 6", title: "נכסים שאינם פנסיוניים", subtitle: "סמן את מה שקיים אצלך. זה מה שיהיה זמין לך לפני שנוגעים בחיסכון הפנסיוני." },
+  { kicker: "שאלה 6 מתוך 6", title: "האם אתה זקוק לכסף כרגע?", subtitle: "התשובה הזו משנה לחלוטין את סדר הצעדים שנמליץ עליהם." },
+  { kicker: "אופציונלי", title: "רוצה לצרף דוחות?", subtitle: "עם דוח פנסיוני אחד נוכל לדייק את התמונה בלי שתצטרך לזכור מספרים." },
+  { kicker: "כמעט סיימנו", title: "הנה מה שהבנתי", subtitle: "עבור על הסיכום ותקן כל דבר שלא מדויק. אחר כך נעבור לניתוח התיק." }
+];
+
+class Component extends DCLogic {
+  state = {
+    step: 0,
+    age: 42,
+    marital: "",
+    kids: 0,
+    kidAges: [],
+    employment: "",
+    income: 18000,
+    pensionPct: 12.5,
+    stability: "",
+    assets: {},
+    products: {},
+    noIdea: false,
+    need: "",
+    needAmount: 50000,
+    purpose: "",
+    files: [],
+    dragging: false,
+    submitted: false
+  };
+
+  componentDidMount() {
+    try {
+      const raw = localStorage.getItem("pensionQuestionnaire.v1");
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      if (!saved || saved.schema !== "pension-questionnaire/1.0" || !saved.state) return;
+      const d = saved.state;
+      const isNum = (v) => typeof v === "number" && isFinite(v);
+      const isStr = (v) => typeof v === "string";
+      const isObj = (v) => v && typeof v === "object" && !Array.isArray(v);
+      const next = {};
+      if (isNum(d.step)) next.step = Math.max(0, Math.min(STEPS.length - 1, d.step));
+      if (isNum(d.age)) next.age = d.age;
+      if (isStr(d.marital)) next.marital = d.marital;
+      if (isNum(d.kids)) next.kids = Math.max(0, Math.min(10, d.kids));
+      if (Array.isArray(d.kidAges)) next.kidAges = d.kidAges.map((v) => (v == null ? "" : String(v)));
+      if (isStr(d.employment)) next.employment = d.employment;
+      if (isNum(d.income)) next.income = d.income;
+      if (isNum(d.pensionPct)) next.pensionPct = d.pensionPct;
+      if (isStr(d.stability)) next.stability = d.stability;
+      if (isObj(d.assets)) next.assets = d.assets;
+      if (isObj(d.products)) next.products = d.products;
+      if (typeof d.noIdea === "boolean") next.noIdea = d.noIdea;
+      if (isStr(d.need)) next.need = d.need;
+      if (isNum(d.needAmount)) next.needAmount = d.needAmount;
+      if (isStr(d.purpose)) next.purpose = d.purpose;
+      if (Array.isArray(d.files)) next.files = d.files.filter((f) => f && isStr(f.name));
+      next.submitted = false;
+      next.dragging = false;
+      this.setState(next);
+    } catch (e) {}
+  }
+
+  componentDidUpdate() {
+    try {
+      const s = this.state;
+      const persisted = {
+        step: s.step, age: s.age, marital: s.marital, kids: s.kids, kidAges: s.kidAges,
+        employment: s.employment, income: s.income, pensionPct: s.pensionPct, stability: s.stability,
+        assets: s.assets, products: s.products, noIdea: s.noIdea,
+        need: s.need, needAmount: s.needAmount, purpose: s.purpose, files: s.files
+      };
+      localStorage.setItem(
+        "pensionQuestionnaire.v1",
+        JSON.stringify({ schema: "pension-questionnaire/1.0", savedAt: new Date().toISOString(), state: persisted, answers: this.payload() })
+      );
+    } catch (e) {}
+  }
+
+  payload() {
+    const s = this.state;
+    const num = (v) => (v === "" || v === null || v === undefined ? null : Number(v));
+    const pick = (list, key) => (list.find((o) => o.key === key) || {}).label || null;
+    return {
+      schema: "pension-questionnaire/1.0",
+      locale: "he-IL",
+      currency: "ILS",
+      completedAt: new Date().toISOString(),
+      step: s.step,
+      personal: {
+        age: s.age,
+        maritalStatus: s.marital || null,
+        maritalStatusLabel: pick(MARITAL, s.marital),
+        childrenCount: s.kids,
+        childrenAges: s.kidAges.slice(0, s.kids).map(num)
+      },
+      employment: {
+        type: s.employment || null,
+        typeLabel: pick(EMPLOYMENT, s.employment),
+        incomeStability: s.stability || null,
+        incomeStabilityLabel: pick(STABILITY, s.stability)
+      },
+      income: {
+        monthlyGross: s.income,
+        pensionContributionPct: s.pensionPct,
+        estimatedMonthlyDeposit: Math.round((s.income * s.pensionPct) / 100)
+      },
+      nonPensionAssets: ASSETS.map((a) => {
+        const d = s.assets[a.key] || {};
+        return { key: a.key, label: a.label, owned: !!d.on, estimatedValue: d.on ? num(d.amount) : null };
+      }),
+      pensionProducts: {
+        needsHelpIdentifying: !!s.noIdea,
+        items: PRODUCTS.map((p) => {
+          const d = s.products[p.key] || {};
+          return { key: p.key, label: p.label, held: !!d.on, provider: d.on ? d.provider || null : null, balance: d.on ? num(d.amount) : null };
+        })
+      },
+      liquidity: {
+        needsMoneyNow: s.need || null,
+        needsMoneyNowLabel: pick(NEEDS, s.need),
+        amount: s.need && s.need !== "no" ? s.needAmount : null,
+        purpose: s.need && s.need !== "no" ? s.purpose || null : null
+      },
+      uploadedReports: s.files.map((f) => ({ name: f.name, sizeBytes: f.bytes, type: f.ext }))
+    };
+  }
+
+  downloadJson() {
+    const data = JSON.stringify(this.payload(), null, 2);
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "pension-questionnaire-" + new Date().toISOString().slice(0, 10) + ".json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }
+
+  fmt(n) {
+    return "₪" + Number(n || 0).toLocaleString("he-IL");
+  }
+
+  set(patch) {
+    this.setState(patch);
+  }
+
+  go(step) {
+    const total = STEPS.length - 1;
+    this.setState({ step: Math.max(0, Math.min(total, step)) });
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  pick(field, key) {
+    return () => this.setState((s) => ({ [field]: s[field] === key ? "" : key }));
+  }
+
+  toggleMap(field, key) {
+    return () =>
+      this.setState((s) => {
+        const map = Object.assign({}, s[field]);
+        const cur = map[key] || {};
+        map[key] = Object.assign({}, cur, { on: !cur.on });
+        return { [field]: map, noIdea: field === "products" ? false : s.noIdea };
+      });
+  }
+
+  setMapField(field, key, prop) {
+    return (e) => {
+      const v = e && e.target ? e.target.value : "";
+      this.setState((s) => {
+        const map = Object.assign({}, s[field]);
+        map[key] = Object.assign({}, map[key] || {}, { on: true, [prop]: v });
+        return { [field]: map };
+      });
+    };
+  }
+
+  chipDyn(active) {
+    return active
+      ? "border-color:#0E6B5E; background:#E4EFEC; color:#0A544A; font-weight:600;"
+      : "";
+  }
+
+  cardDyn(active) {
+    return active ? "border-color:#0E6B5E; background:#F5FAF8;" : "";
+  }
+
+  addFiles(list) {
+    const items = Array.from(list || []).map((f) => ({
+      id: Math.random().toString(36).slice(2),
+      name: f.name,
+      bytes: f.size,
+      ext: (f.name.split(".").pop() || "file").toUpperCase().slice(0, 4)
+    }));
+    if (items.length) this.setState((s) => ({ files: s.files.concat(items), dragging: false }));
+    else this.setState({ dragging: false });
+  }
+
+  sizeLabel(b) {
+    if (!b) return "";
+    if (b < 1024 * 1024) return Math.max(1, Math.round(b / 1024)) + " KB";
+    return (b / (1024 * 1024)).toFixed(1) + " MB";
+  }
+
+  summaryRows() {
+    const s = this.state;
+    const marital = (MARITAL.find((m) => m.key === s.marital) || {}).label || "לא צוין";
+    const ages = s.kidAges.slice(0, s.kids).filter(Boolean);
+    const kidsTxt = s.kids
+      ? (s.kids === 1 ? "ילד אחד" : s.kids + " ילדים") +
+        (ages.length ? (s.kids === 1 ? " (גיל " + ages[0] + ")" : " (גילאי " + ages.join(", ") + ")") : "")
+      : "ללא ילדים";
+    const emp = (EMPLOYMENT.find((m) => m.key === s.employment) || {}).label || "לא צוין";
+    const stab = (STABILITY.find((m) => m.key === s.stability) || {}).label;
+    const deposit = Math.round((s.income * s.pensionPct) / 100);
+    const assetList = ASSETS.filter((a) => (s.assets[a.key] || {}).on).map((a) => {
+      const amt = (s.assets[a.key] || {}).amount;
+      return a.label + (amt ? " · " + this.fmt(amt) : "");
+    });
+    const prodList = PRODUCTS.filter((p) => (s.products[p.key] || {}).on).map((p) => {
+      const d = s.products[p.key] || {};
+      const extra = [d.provider, d.amount ? this.fmt(d.amount) : ""].filter(Boolean).join(" · ");
+      return p.label + (extra ? " · " + extra : "");
+    });
+    const need = (NEEDS.find((m) => m.key === s.need) || {}).label || "לא צוין";
+    const needExtra = s.need && s.need !== "no" ? " · " + this.fmt(s.needAmount) + (s.purpose ? " · " + s.purpose : "") : "";
+
+    return [
+      { title: "פרופיל אישי", value: "גיל " + s.age + " · " + marital + " · " + kidsTxt, step: 1 },
+      { title: "תעסוקה", value: emp + (stab ? " · הכנסה " + stab : ""), step: 2 },
+      { title: "הכנסה והפרשות", value: this.fmt(s.income) + " בחודש · " + s.pensionPct + "% הפרשה · כ־" + this.fmt(deposit) + " לחודש לחיסכון", step: 3 },
+      { title: "מוצרים פנסיוניים", value: s.noIdea ? "צריך עזרה בזיהוי המוצרים הקיימים" : prodList.length ? prodList.join(" | ") : "לא סומנו מוצרים", step: 4 },
+      { title: "נכסים לא פנסיוניים", value: assetList.length ? assetList.join(" | ") : "לא סומנו נכסים", step: 5 },
+      { title: "צורך בנזילות", value: need + needExtra, step: 6 },
+      { title: "דוחות שצורפו", value: s.files.length ? s.files.map((f) => f.name).join(" | ") : "לא צורפו קבצים", step: 7 }
+    ].map((r) => Object.assign(r, { onEdit: () => this.go(r.step) }));
+  }
+
+  renderVals() {
+    const s = this.state;
+    const allowSkip = this.props.allowSkip ?? true;
+    const last = STEPS.length - 1;
+    const step = s.submitted
+      ? { kicker: "הושלם", title: "השאלון נשמר", subtitle: "כל התשובות נשמרו בקובץ JSON אחד וההורדה החלה. הקובץ נשמר גם מקומית בדפדפן, כך שתוכל לחזור ולערוך אותו." }
+      : STEPS[s.step];
+    const deposit = Math.round((s.income * s.pensionPct) / 100);
+    const allowUpload = this.props.allowUpload ?? true;
+    const skippable = allowSkip && s.step > 0 && s.step < STEPS.length - 1;
+    const jump = (n) => {
+      let t = n;
+      if (!allowUpload && t === 7) t = n > s.step ? 8 : 6;
+      return t;
+    };
+
+    return {
+      stepNum: s.step + 1,
+      stepTotal: STEPS.length,
+      progress: Math.round((s.step / last) * 100) + "%",
+      stepKicker: step.kicker,
+      stepTitle: step.title,
+      stepSubtitle: step.subtitle,
+      is0: s.step === 0,
+      is1: s.step === 1,
+      is2: s.step === 2,
+      is3: s.step === 3,
+      is4: s.step === 5,
+      is5: s.step === 4,
+      is6: s.step === 6,
+      is7: s.step === 7 && allowUpload,
+      is8: s.step === 8 && !s.submitted,
+      isDone: s.step === 8 && s.submitted,
+      showHelp: s.step !== 8,
+      jsonPreview: JSON.stringify(this.payload(), null, 2),
+      onDownloadJson: () => this.downloadJson(),
+      onEditAgain: () => this.set({ submitted: false }),
+
+      age: s.age,
+      onAge: (e) => this.set({ age: Number(e.target.value) }),
+      kids: s.kids,
+      hasKids: s.kids > 0,
+      onKidsPlus: () =>
+        this.setState((st) => ({ kids: Math.min(10, st.kids + 1), kidAges: st.kidAges.concat([""]) })),
+      onKidsMinus: () =>
+        this.setState((st) => ({ kids: Math.max(0, st.kids - 1), kidAges: st.kidAges.slice(0, Math.max(0, st.kids - 1)) })),
+      kidAges: Array.from({ length: s.kids }).map((_, i) => ({
+        label: "ילד " + (i + 1),
+        value: s.kidAges[i] || "",
+        onChange: (e) => {
+          const v = e.target.value;
+          this.setState((st) => {
+            const arr = st.kidAges.slice();
+            arr[i] = v;
+            return { kidAges: arr };
+          });
+        }
+      })),
+      maritalOptions: MARITAL.map((o) => ({
+        label: o.label,
+        dyn: this.chipDyn(s.marital === o.key),
+        onSelect: this.pick("marital", o.key)
+      })),
+
+      employmentOptions: EMPLOYMENT.map((o) => ({
+        label: o.label,
+        hint: o.hint,
+        dyn: this.cardDyn(s.employment === o.key),
+        dotDyn: s.employment === o.key ? "border-color:#0E6B5E;" : "",
+        innerDyn: s.employment === o.key ? "" : "background:transparent;",
+        onSelect: this.pick("employment", o.key)
+      })),
+
+      income: s.income,
+      incomeLabel: this.fmt(s.income),
+      onIncome: (e) => this.set({ income: Number(e.target.value) }),
+      pensionPct: s.pensionPct,
+      pctLabel: s.pensionPct + "%",
+      onPct: (e) => this.set({ pensionPct: Number(e.target.value) }),
+      monthlyDeposit: this.fmt(deposit),
+      stabilityOptions: STABILITY.map((o) => ({
+        label: o.label,
+        dyn: this.chipDyn(s.stability === o.key),
+        onSelect: this.pick("stability", o.key)
+      })),
+
+      assetOptions: ASSETS.map((o) => {
+        const d = s.assets[o.key] || {};
+        return {
+          label: o.label,
+          hint: o.hint,
+          amountLabel: o.amountLabel,
+          on: !!d.on,
+          mark: d.on ? "✓" : "",
+          amount: d.amount || "",
+          dyn: this.cardDyn(!!d.on),
+          boxDyn: d.on ? "border-color:#0E6B5E; background:#0E6B5E;" : "",
+          onToggle: this.toggleMap("assets", o.key),
+          onAmount: this.setMapField("assets", o.key, "amount")
+        };
+      }),
+
+      productOptions: PRODUCTS.map((o) => {
+        const d = s.products[o.key] || {};
+        return {
+          label: o.label,
+          hint: o.hint,
+          on: !!d.on,
+          mark: d.on ? "✓" : "",
+          amount: d.amount || "",
+          provider: d.provider || "",
+          dyn: this.cardDyn(!!d.on),
+          boxDyn: d.on ? "border-color:#0E6B5E; background:#0E6B5E;" : "",
+          onToggle: this.toggleMap("products", o.key),
+          onAmount: this.setMapField("products", o.key, "amount"),
+          onProvider: this.setMapField("products", o.key, "provider")
+        };
+      }),
+      noIdeaDyn: s.noIdea ? "border-color:#0E6B5E; border-style:solid; background:#E4EFEC; color:#0A544A; font-weight:600;" : "",
+      onNoIdea: () => this.setState((st) => ({ noIdea: !st.noIdea, products: st.noIdea ? st.products : {} })),
+
+      needOptions: NEEDS.map((o) => ({
+        label: o.label,
+        hint: o.hint,
+        dyn: this.cardDyn(s.need === o.key),
+        dotDyn: s.need === o.key ? "border-color:#0E6B5E;" : "",
+        innerDyn: s.need === o.key ? "" : "background:transparent;",
+        onSelect: this.pick("need", o.key)
+      })),
+      needsMoney: s.need === "soon" || s.need === "now",
+      needAmount: s.needAmount,
+      onNeedAmount: (e) => this.set({ needAmount: Number(e.target.value) }),
+      purposeOptions: PURPOSES.map((p) => ({
+        label: p,
+        dyn: this.chipDyn(s.purpose === p),
+        onSelect: this.pick("purpose", p)
+      })),
+
+      dropDyn: s.dragging ? "border-color:#0E6B5E; background:#E4EFEC;" : "",
+      onDragOver: (e) => {
+        e.preventDefault();
+        if (!s.dragging) this.set({ dragging: true });
+      },
+      onDragLeave: () => this.set({ dragging: false }),
+      onDrop: (e) => {
+        e.preventDefault();
+        this.addFiles(e.dataTransfer && e.dataTransfer.files);
+      },
+      onFiles: (e) => this.addFiles(e.target.files),
+      hasFiles: s.files.length > 0,
+      files: s.files.map((f) => ({
+        name: f.name,
+        ext: f.ext,
+        size: this.sizeLabel(f.bytes),
+        onRemove: () => this.setState((st) => ({ files: st.files.filter((x) => x.id !== f.id) }))
+      })),
+
+      summary: this.summaryRows(),
+
+      nextLabel: s.step === 0 ? "בוא נתחיל" : s.step === last ? "שמירה ושליחה" : "המשך",
+      onNext: () => {
+        if (s.step === last) {
+          this.downloadJson();
+          this.setState({ submitted: true });
+          if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+        } else this.go(jump(s.step + 1));
+      },
+      onBack: () => this.go(jump(s.step - 1)),
+      onRestart: () => {
+        this.setState({ step: 0, submitted: false });
+        if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+      },
+      restartDyn: s.step === 0 ? "display:none;" : "",
+      footerDyn: s.submitted ? "display:none;" : "",
+      backDyn: s.step === 0 ? "visibility:hidden;" : "",
+      onSkip: () => this.go(jump(s.step + 1)),
+      skipDyn: skippable ? "" : "display:none;",
+      nextDyn: ""
+    };
+  }
+}
+</script>
+</body>
+</html>
