@@ -1950,6 +1950,7 @@
       <div style="font-size:17px; font-weight:600; letter-spacing:-0.01em">עוזר הפנסיה</div>
     </div>
     <div style="display:flex; align-items:center; gap:14px">
+      <button onClick="{{ onClearAll }}" style="cursor:pointer; border:1.5px solid #E2DCD2; background:#FFFFFF; color:#6B7A76; font-size:14.5px; font-weight:600; padding:9px 16px; border-radius:99px; transition:all .18s ease" style-hover="border-color:#B4453A; color:#B4453A">ניקוי הכל</button>
       <button onClick="{{ onRestart }}" style="cursor:pointer; border:1.5px solid #E2DCD2; background:#FFFFFF; color:#17211F; font-size:14.5px; font-weight:600; padding:9px 16px; border-radius:99px; transition:all .18s ease; {{ restartDyn }}" style-hover="border-color:#0E6B5E; color:#0E6B5E">חזור להתחלה</button>
       <div style="font-size:14px; color:#6B7A76; font-weight:500">שלב {{ stepNum }} מתוך {{ stepTotal }}</div>
     </div>
@@ -1959,7 +1960,9 @@
     <div style="height:100%; border-radius:99px; background:#0E6B5E; transition:width .45s cubic-bezier(.4,0,.2,1); width:{{ progress }}"></div>
   </div>
 
-  <div style="width:100%; max-width:780px; margin-top:28px; background:#FFFFFF; border:1px solid #E7E1D7; border-radius:22px; padding:38px 38px 34px; box-shadow:0 1px 2px rgba(23,33,31,.04), 0 18px 44px -28px rgba(23,33,31,.22)">
+  <div style="width:100%; max-width:1100px; display:flex; align-items:flex-start; justify-content:center; gap:22px; flex-wrap:wrap; margin-top:28px">
+
+  <div style="flex:1 1 480px; max-width:780px; background:#FFFFFF; border:1px solid #E7E1D7; border-radius:22px; padding:38px 38px 34px; box-shadow:0 1px 2px rgba(23,33,31,.04), 0 18px 44px -28px rgba(23,33,31,.22)">
 
     <div style="animation:stepIn .35s ease both">
       <div style="font-size:13px; font-weight:600; color:#0E6B5E; letter-spacing:.06em; margin-bottom:10px">{{ stepKicker }}</div>
@@ -2201,6 +2204,19 @@
 
   </div>
 
+  <sc-if value="{{ hasInsights }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:0 1 280px; min-width:240px; position:sticky; top:20px; background:#FFF4B8; border:1px solid #F0DE7A; border-radius:14px; padding:18px 20px 20px; box-shadow:0 8px 18px -12px rgba(122,101,16,.45); transform:rotate(-0.6deg)">
+      <div style="font-size:12.5px; font-weight:700; color:#7A6510; letter-spacing:.06em; margin-bottom:10px">תובנות שנאספו עד כה</div>
+      <div style="display:grid; gap:10px">
+        <sc-for list="{{ insightsList }}" as="ins" hint-placeholder-count="1">
+          <div style="font-size:15px; line-height:1.55; color:#4A3F0A; text-wrap:pretty">{{ ins.text }}</div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  </div>
+
   <div style="width:100%; max-width:780px; display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:22px; flex-wrap:wrap; {{ footerDyn }}">
     <button onClick="{{ onBack }}" style="cursor:pointer; padding:15px 26px; border-radius:14px; border:1.5px solid #E2DCD2; background:transparent; font-size:16.5px; font-weight:600; color:#17211F; transition:all .18s ease; {{ backDyn }}" style-hover="border-color:#17211F">חזרה</button>
     <div style="display:flex; align-items:center; gap:18px">
@@ -2402,8 +2418,8 @@ const REPORT_FINDINGS = [
   }
 ];
 
-class Component extends DCLogic {
-  state = {
+function initialState() {
+  return {
     step: 0,
     age: 42,
     marital: "",
@@ -2423,6 +2439,10 @@ class Component extends DCLogic {
     submitted: false,
     phase: "questionnaire"
   };
+}
+
+class Component extends DCLogic {
+  state = initialState();
 
   componentDidMount() {
     try {
@@ -2529,6 +2549,21 @@ class Component extends DCLogic {
 
   clamp(n) {
     return Math.max(0, Math.min(100, Number(n) || 0));
+  }
+
+  computeInsights() {
+    const s = this.state;
+    const list = [];
+    if (s.kids > 0) {
+      list.push(
+        "יש לך " +
+          (s.kids === 1 ? "ילד אחד" : s.kids + " ילדים") +
+          " — לכן אנו ממליצים על ביטוח חיים (ריסק) בסך כ־" +
+          this.fmt(LIFE_INSURANCE_PER_CHILD * s.kids) +
+          ". בעמוד הסיכום שמחכה לך בסוף השאלון נדייק את ההמלצה הזו לפי כל מה שעוד תספר/י לנו."
+      );
+    }
+    return list;
   }
 
   set(patch) {
@@ -2660,11 +2695,14 @@ class Component extends DCLogic {
     const step = STEPS[s.step];
     const deposit = Math.round((s.income * s.pensionPct) / 100);
     const skippable = allowSkip && s.step > 0 && s.step < STEPS.length - 1;
+    const insights = this.computeInsights();
 
     return {
       stepNum: s.step + 1,
       stepTotal: STEPS.length,
       progress: Math.round((s.step / last) * 100) + "%",
+      insightsList: insights.map((text, i) => ({ text, key: i })),
+      hasInsights: s.step > 0 && insights.length > 0,
       stepKicker: step.kicker,
       stepTitle: step.title,
       stepSubtitle: step.subtitle,
@@ -2800,6 +2838,14 @@ class Component extends DCLogic {
       onBack: () => this.go(s.step - 1),
       onRestart: () => {
         this.setState({ step: 0, submitted: false });
+        if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+      },
+      onClearAll: () => {
+        if (typeof window !== "undefined" && !window.confirm("לנקות את כל הנתונים שמילאת? לא ניתן לשחזר את זה.")) return;
+        try {
+          localStorage.removeItem("pensionQuestionnaire.v1");
+        } catch (e) {}
+        this.setState(initialState());
         if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
       },
       restartDyn: s.step === 0 ? "display:none;" : "",
