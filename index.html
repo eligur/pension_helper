@@ -2665,12 +2665,36 @@ class Component extends DCLogic {
             hasLink: false
           };
 
+    const hasSpouse = s.marital === "married" || s.marital === "partner";
+    const hasKids = s.kids > 0;
+    const beneficiariesParts = ["אנו ממליצים לבדוק את המוטבים הרשומים בכל פוליסות הביטוח ובקרן הפנסיה שלך."];
+    if (hasSpouse || hasKids) {
+      const who = hasSpouse && hasKids ? "בן/בת הזוג והילדים" : hasSpouse ? "בן/בת הזוג" : "הילדים";
+      beneficiariesParts.push(
+        "כדאי לוודא ש" + who + " רשומים כמוטבים בכל הכלים הפיננסיים הרלוונטיים — קרן הפנסיה, ביטוח החיים וקופות הגמל."
+      );
+    }
+    if (s.marital === "divorced") {
+      beneficiariesParts.push(
+        "מכיוון שאת/ה גרוש/ה, חשוב לוודא גם שבן/בת הזוג לשעבר אינם עדיין רשומים כמוטבים, אלא אם הדבר עודכן במפורש."
+      );
+    }
+    if (!hasSpouse && !hasKids && s.marital !== "divorced") {
+      beneficiariesParts.push("עדכנו אותם בכל שינוי משמעותי במצב המשפחתי שלכם.");
+    }
+    const beneficiariesRow = {
+      num: "08",
+      title: "מוטבים",
+      text: beneficiariesParts.join(" "),
+      hasLink: false
+    };
+
     return {
       reportDate: this.props.reportDate ?? "יולי 2026",
       clientName: this.props.clientName ?? "דוח תכנון פנסיוני",
       headline:
         this.props.headline ??
-        "אספנו את מה שסיפרת לנו בשאלון וריכזנו כאן שבעה נושאים מרכזיים, כל אחד עם המלצה כללית אחת שכדאי להעלות בפגישה הבאה שלך עם היועץ הפנסיוני.",
+        "אספנו את מה שסיפרת לנו בשאלון וריכזנו כאן שמונה נושאים מרכזיים, כל אחד עם המלצה כללית אחת שכדאי להעלות בפגישה הבאה שלך עם היועץ הפנסיוני.",
       facts: [
         { label: "גיל", value: String(s.age) },
         { label: "שנים עד פרישה", value: String(yearsToRetirement) },
@@ -2684,7 +2708,7 @@ class Component extends DCLogic {
         "אחוז החשיפה למניות נגזר מטווח הזמן עד הפרישה, מהצורך בנזילות ומיכולת הספיגה של ירידות. ככל שהטווח ארוך יותר, החשיפה המומלצת גבוהה יותר — לפי כלל אצבע מקובל של 100 פחות הגיל.",
       equityLink: EQUITY_LINK,
       equityLinkLabel: EQUITY_LINK_LABEL,
-      findingsRows: [lifeInsuranceRow].concat(REPORT_FINDINGS)
+      findingsRows: [lifeInsuranceRow].concat(REPORT_FINDINGS).concat([beneficiariesRow])
     };
   }
 
